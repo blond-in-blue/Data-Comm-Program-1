@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5A2821BE1E46EA4A00FC3EA4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A2821BD1E46EA4A00FC3EA4 /* main.cpp */; };
+		5A0E4D3D1E4AC52F0050E7D9 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E4D3B1E4AC52F0050E7D9 /* client.cpp */; };
+		5A2821BE1E46EA4A00FC3EA4 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A2821BD1E46EA4A00FC3EA4 /* server.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +24,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5A0E4D3B1E4AC52F0050E7D9 /* client.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = client.cpp; sourceTree = "<group>"; };
 		5A2821BA1E46EA4A00FC3EA4 /* Data Comm Programming Assignment 1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Data Comm Programming Assignment 1"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A2821BD1E46EA4A00FC3EA4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5A2821BD1E46EA4A00FC3EA4 /* server.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +59,8 @@
 		5A2821BC1E46EA4A00FC3EA4 /* Data Comm Programming Assignment 1 */ = {
 			isa = PBXGroup;
 			children = (
-				5A2821BD1E46EA4A00FC3EA4 /* main.cpp */,
+				5A0E4D3B1E4AC52F0050E7D9 /* client.cpp */,
+				5A2821BD1E46EA4A00FC3EA4 /* server.cpp */,
 			);
 			path = "Data Comm Programming Assignment 1";
 			sourceTree = "<group>";
@@ -119,7 +122,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A2821BE1E46EA4A00FC3EA4 /* main.cpp in Sources */,
+				5A0E4D3D1E4AC52F0050E7D9 /* client.cpp in Sources */,
+				5A2821BE1E46EA4A00FC3EA4 /* server.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +250,7 @@
 				5A2821C31E46EA4A00FC3EA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
