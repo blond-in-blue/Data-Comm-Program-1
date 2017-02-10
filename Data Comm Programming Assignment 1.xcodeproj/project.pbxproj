@@ -7,12 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5A0E4D3D1E4AC52F0050E7D9 /* client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E4D3B1E4AC52F0050E7D9 /* client.cpp */; };
-		5A0E4D421E4BE95A0050E7D9 /* client copy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E4D401E4BE95A0050E7D9 /* client copy.cpp */; };
-		5A0E4D431E4BE95A0050E7D9 /* server copy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E4D411E4BE95A0050E7D9 /* server copy.cpp */; };
-		5A0E4D451E4BF8310050E7D9 /* client_armiwiki.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E4D441E4BF8310050E7D9 /* client_armiwiki.cpp */; };
-		5A0E4D471E4BF89F0050E7D9 /* server_armiwiki.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A0E4D461E4BF89F0050E7D9 /* server_armiwiki.cpp */; };
-		5A2821BE1E46EA4A00FC3EA4 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A2821BD1E46EA4A00FC3EA4 /* server.cpp */; };
+		5A2C94E21E4D664800D77A2C /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5A2821BD1E46EA4A00FC3EA4 /* server.cpp */; };
+		5A2C94E51E4D6E2400D77A2C /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = 5A2C94E31E4D6E2400D77A2C /* makefile */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +31,10 @@
 		5A0E4D461E4BF89F0050E7D9 /* server_armiwiki.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server_armiwiki.cpp; sourceTree = "<group>"; };
 		5A2821BA1E46EA4A00FC3EA4 /* Data Comm Programming Assignment 1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Data Comm Programming Assignment 1"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A2821BD1E46EA4A00FC3EA4 /* server.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
+		5A2C94DD1E4D652F00D77A2C /* server beej.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "server beej.c"; sourceTree = "<group>"; };
+		5A2C94DF1E4D654800D77A2C /* client beej.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "client beej.c"; sourceTree = "<group>"; };
+		5A2C94E31E4D6E2400D77A2C /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
+		5A2C94E41E4D6E2400D77A2C /* text.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = text.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,12 +67,16 @@
 		5A2821BC1E46EA4A00FC3EA4 /* Data Comm Programming Assignment 1 */ = {
 			isa = PBXGroup;
 			children = (
+				5A2C94E31E4D6E2400D77A2C /* makefile */,
+				5A2C94E41E4D6E2400D77A2C /* text.txt */,
 				5A0E4D3B1E4AC52F0050E7D9 /* client.cpp */,
 				5A2821BD1E46EA4A00FC3EA4 /* server.cpp */,
 				5A0E4D401E4BE95A0050E7D9 /* client copy.cpp */,
 				5A0E4D441E4BF8310050E7D9 /* client_armiwiki.cpp */,
 				5A0E4D461E4BF89F0050E7D9 /* server_armiwiki.cpp */,
 				5A0E4D411E4BE95A0050E7D9 /* server copy.cpp */,
+				5A2C94DD1E4D652F00D77A2C /* server beej.c */,
+				5A2C94DF1E4D654800D77A2C /* client beej.c */,
 			);
 			path = "Data Comm Programming Assignment 1";
 			sourceTree = "<group>";
@@ -134,12 +138,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A0E4D421E4BE95A0050E7D9 /* client copy.cpp in Sources */,
-				5A0E4D451E4BF8310050E7D9 /* client_armiwiki.cpp in Sources */,
-				5A2821BE1E46EA4A00FC3EA4 /* server.cpp in Sources */,
-				5A0E4D431E4BE95A0050E7D9 /* server copy.cpp in Sources */,
-				5A0E4D3D1E4AC52F0050E7D9 /* client.cpp in Sources */,
-				5A0E4D471E4BF89F0050E7D9 /* server_armiwiki.cpp in Sources */,
+				5A2C94E51E4D6E2400D77A2C /* makefile in Sources */,
+				5A2C94E21E4D664800D77A2C /* server.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
