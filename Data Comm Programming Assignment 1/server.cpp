@@ -1,5 +1,5 @@
 //
-//  main.cpp
+//  server.cpp
 //  Data Comm Programming Assignment 1
 //
 //  Created by Hunter Holder on 2/4/17.
@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netdb.h>
+
+using namespace std;
 
 
 
