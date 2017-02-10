@@ -27,16 +27,18 @@ using namespace std;
 // argv[3]: File location
 int main(int argc, const char * argv[]) {
 	
-	if (argc > 3) {
+	if (argc < 3) {
 		cerr << "Too few arguments. 3 required.\n";
 		exit(EXIT_FAILURE);
-	} else if (argc < 3) {
-		cerr << "Too many arguments. 3 required.\n";
+	} else if (argc > 3) {
+		cerr << "Too many arguments. 3 required (change variable to 4 later).\n";
 		exit(EXIT_FAILURE);
 	}
 	
-	
-	int mySocket;
+	const char * myHostname = argv[1];
+	const char * negotiationPort = argv[2];
+	//const char * fileLocation = argv[3];
+	int mySocket = 0;
 	struct sockaddr_in server;
 
 	struct hostent *s;
@@ -49,15 +51,17 @@ int main(int argc, const char * argv[]) {
 	}
 	
 	// Create socket
-	memset(&server, 0, sizeof(server));
+	memset((char *) &server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = inet_addr(argv[1]);
-	server.sin_port = htons(atoi(argv[2]));
+	server.sin_addr.s_addr = inet_addr(myHostname);
+	server.sin_port = htons(atoi(negotiationPort));
 	
 	// Connect to socket
 	if (connect(mySocket, (struct sockaddr *) &server, sizeof(server)) < 0) {
 		cerr << "Error connecting to server.\n";
 		exit(EXIT_FAILURE);
+	} else {
+		cout << "Connection established to server at port " << negotiationPort << "\n";
 	}
 	
 	socklen_t slen = sizeof(server);

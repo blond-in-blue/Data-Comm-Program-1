@@ -22,40 +22,44 @@ using namespace std;
 #define BUFFERMAX 4096
 #define CLIENTMAX 1
 
-int accept_conn(int sock)
-{
-	int dataconnfd;
-	socklen_t dataclilen;
-	struct sockaddr_in datacliaddr;
-	
-	dataclilen = sizeof(datacliaddr);
-	//accept a connection
-	if ((dataconnfd = accept (sock, (struct sockaddr *) &datacliaddr, &dataclilen)) <0) {
-		cerr<<"Problem in accepting the data socket"<<endl;
-		exit(EXIT_FAILURE);
-	}
-	
-	return(dataconnfd);
-}
 
 // argv[1]: Port
 int main(int argc, const char * argv[]) {
 	
-	int mysocket = 0;  mysocket=socket(AF_INET, SOCK_DGRAM, 0);
+	if (argc < 2) {
+		cerr << "Too few arguments. 1 required.\n";
+		exit(EXIT_FAILURE);
+	} else if (argc > 2) {
+		cerr << "Too many arguments. 1 required.\n";
+		exit(EXIT_FAILURE);
+	}
+	
+	const char * myPort = argv[1];
+	int mySocket = 0;
+	if ((mySocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		cerr << "Error in socket creation.\n";
+		exit(EXIT_FAILURE);
+	}
 	struct sockaddr_in server;
 	memset((char *) &server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-	server.sin_port = htons(atoi(argv[1]));
+	server.sin_port = htons(atoi(myPort));
 	server.sin_addr.s_addr = htonl(INADDR_ANY);
 	
-	// Get random port number
-	int randomPort = 0;
+	bind(mySocket, (struct sockaddr *) &server, sizeof(server));
 	
-	do {
-		randomPort = rand();
-	} while (randomPort <= 1024 && randomPort >= 65535);
+	listen(mySocket, 5);
 	
-	cout << randomPort;
+	accept(mySocket, (struct sockaddr *) NULL, NULL);
 
+	// Get random port number
+	int randomPort[1];
+	srand((unsigned)time(NULL));
+	do {
+		randomPort[0] = rand() % 65536;
+	} while (randomPort[0] <= 1024 && randomPort[0] >= 65535);
+	cout << "Random port created: " << randomPort[0] << "\n";
+
+	close(mySocket);
     return 0;
 }
