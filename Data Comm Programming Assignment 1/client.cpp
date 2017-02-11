@@ -38,14 +38,11 @@ int main(int argc, const char * argv[]) {
 	// TCP
 	
 	int sendSize = 512;
-	const char * myHostName = argv[1];
-	const char * negotiationPort = argv[2];
-	const char * inputFileLocation = argv[3];
 	int mySocket = 0;
 	struct sockaddr_in server;
 
 	struct hostent *s;
-	s = gethostbyname(myHostName);
+	s = gethostbyname(argv[1]);
 	
 	// Create socket
 	if ((mySocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -54,8 +51,7 @@ int main(int argc, const char * argv[]) {
 	}
 	memset((char *) &server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-//	server.sin_addr.s_addr = inet_addr(myHostName);
-	server.sin_port = htons(atoi(negotiationPort));
+	server.sin_port = htons(atoi(argv[2]));
 	
 	// Connect to socket
 	int connectSocket = 0;
@@ -63,7 +59,7 @@ int main(int argc, const char * argv[]) {
 		cerr << "Error connecting to server.\n";
 		exit(EXIT_FAILURE);
 	} else {
-		cout << "- Connection established to server at port " << negotiationPort << "\n";
+		cout << "- Connection established to server at port " << argv[2] << "\n";
 	}
 	
 	socklen_t slen = sizeof(server);
@@ -95,7 +91,7 @@ int main(int argc, const char * argv[]) {
 	
 	// Stores simple end of file message
 	// Variable-sized object may not be initialized with value
-	char eofIndicator[64] = "eof";
+	char eofIndicator[512] = "eof";
 	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
 	
@@ -109,7 +105,7 @@ int main(int argc, const char * argv[]) {
 
 	// Read from file
 	// Source: http://www.cplusplus.com/reference/cstdio/fread/
-	myFile = fopen ( inputFileLocation , "rb" );
+	myFile = fopen ( argv[3] , "rb" );
 	if (myFile==NULL) {fputs ("File error", stderr); exit (1);}
 	// Obtain file size
 	fseek (myFile , 0 , SEEK_END);

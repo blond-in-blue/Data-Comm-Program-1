@@ -35,7 +35,6 @@ int main(int argc, const char * argv[]) {
 	// TCP
 	
 	int sendSize = 512;
-	const char * myPort = argv[1];
 	int mySocket = 0;
 	if ((mySocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		cerr << "Error in socket creation.\n";
@@ -44,7 +43,7 @@ int main(int argc, const char * argv[]) {
 	struct sockaddr_in server;
 	memset((char *) &server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-	server.sin_port = htons(atoi(myPort));
+	server.sin_port = htons(atoi(argv[1]));
 	server.sin_addr.s_addr = htonl(INADDR_ANY);
 	
 	bind(mySocket, (struct sockaddr *) &server, sizeof(server));
