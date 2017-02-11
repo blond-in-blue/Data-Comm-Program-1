@@ -27,26 +27,25 @@ using namespace std;
 // argv[3]: File location
 int main(int argc, const char * argv[]) {
 	
-	if (argc < 3) {
+	if (argc < 4) {
 		cerr << "Too few arguments. 3 required.\n";
 		exit(EXIT_FAILURE);
-	} else if (argc > 3) {
-		cerr << "Too many arguments. 3 required (change variable to 4 later).\n";
+	} else if (argc > 4) {
+		cerr << "Too many arguments. 3 required.\n";
 		exit(EXIT_FAILURE);
 	}
 	
 	// TCP
 	
 	int sendSize = 512;
-	const char * myHostname = argv[1];
+	const char * myHostName = argv[1];
 	const char * negotiationPort = argv[2];
-	//const char * inputFileLocation = argv[3];
-	const char * inputFileLocation = "text.txt";
+	const char * inputFileLocation = argv[3];
 	int mySocket = 0;
 	struct sockaddr_in server;
 
 	struct hostent *s;
-	s = gethostbyname(argv[1]);
+	s = gethostbyname(myHostName);
 	
 	// Create socket
 	if ((mySocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -55,7 +54,7 @@ int main(int argc, const char * argv[]) {
 	}
 	memset((char *) &server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = inet_addr(myHostname);
+//	server.sin_addr.s_addr = inet_addr(myHostName);
 	server.sin_port = htons(atoi(negotiationPort));
 	
 	// Connect to socket
@@ -73,10 +72,11 @@ int main(int argc, const char * argv[]) {
 	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
 	
-	recv(mySocket, &payload, 16, 0);
-	cout << "- Negotiation detected. Selected random port " << payload << "\n";
+	int randomPortIn[1];
+	recv(mySocket, randomPortIn, sizeof(randomPortIn), 0);
+	cout << "- Negotiation detected. Selected random port " << randomPortIn[0] << "\n";
 	
-	int randomPort = atoi(&payload[0]);
+	int randomPort = randomPortIn[0];
 	
 	// Close socket
 	close(mySocket);
@@ -90,7 +90,6 @@ int main(int argc, const char * argv[]) {
 	}
 	memset((char *) &server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = inet_addr(myHostname);
 	server.sin_port = htons(randomPort);
 	slen = sizeof(server);
 	
@@ -100,15 +99,13 @@ int main(int argc, const char * argv[]) {
 	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
 	
-	char * buffer;
-	char * ACK;
 	FILE * myFile;
 	long fileSize;
 	size_t readTest;
 	int bufferSize = 4;
 	
-	buffer = (char*) malloc (sizeof(char)*fileSize);
-	ACK = (char*) malloc (sizeof(char)*fileSize);
+	char buffer[sendSize];
+	char ACKreceiver[sendSize];
 
 	// Read from file
 	// Source: http://www.cplusplus.com/reference/cstdio/fread/
@@ -125,34 +122,35 @@ int main(int argc, const char * argv[]) {
 		exit (3);
 	}
 	
-	
 	do {
 
 		sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&server, slen);
+
+		recvfrom(mySocket, ACKreceiver, sendSize, 0, (struct sockaddr *)&server, &slen);
 		
-		recvfrom(mySocket, ACK, sendSize, 0, (struct sockaddr *)&server, &slen);
+		cout << ACKreceiver << endl;
 		
-		cout << ACK << endl;
-		
+		memset(buffer,'\0',512);
 		fread(buffer, 1, bufferSize, myFile);
 		
 	} while (!feof(myFile));
-	
+
 	// Send eof
-	sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&server, slen);
-	
-	// Receive ACK
-	recvfrom(mySocket, ACK, sendSize, 0, (struct sockaddr *)&server, &slen);
-	
-	// Send last line containing eof
 	sendto(mySocket, eofIndicator, sendSize, 0, (struct sockaddr *)&server, slen);
+
+	// Receive ACK
+	recvfrom(mySocket, ACKreceiver, sendSize, 0, (struct sockaddr *)&server, &slen);
+
+	// Send last line containing eof
+	sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&server, slen);
 	
 	cout << buffer << endl;
 
 	close(mySocket);
 	fclose(myFile);
-	free(buffer);
-	free(ACK);
+	memset(buffer,'\0',512);
+	memset(ACKreceiver,'\0',512);
+
 	
 	return 0;
 }

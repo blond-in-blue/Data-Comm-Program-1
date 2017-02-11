@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <sstream>
 
 using namespace std;
 
@@ -56,16 +57,14 @@ int main(int argc, const char * argv[]) {
 	cout << "- Received payload: " << payload << "\n";
 
 	// Get random port number
-	int randomPort;
+	int randomPort[1];
 	srand((unsigned)time(NULL));
 	do {
-		randomPort = rand() % 65536;
-	} while (randomPort <= 1024 && randomPort >= 65535);
-	cout << "- Random port created: " << randomPort << "\n";
+		randomPort[0] = rand() % 65536;
+	} while (randomPort[0] <= 1024 && randomPort[0] >= 65535);
+	cout << "- Random port created: " << randomPort[0] << "\n";
 	
-	payload = to_string(randomPort);
-	
-	send(acceptance, &payload, sizeof(payload), 0);
+	send(acceptance, randomPort, sizeof(randomPort), 0);
 	
 	// Close socket
 	close(mySocket);
@@ -79,38 +78,46 @@ int main(int argc, const char * argv[]) {
 	}
 	memset((char *) &server, 0, sizeof(server));
 	server.sin_family = AF_INET;
-	server.sin_port = htons(randomPort);
+	server.sin_port = htons(randomPort[0]);
 	server.sin_addr.s_addr = htonl(INADDR_ANY);
 	
 	struct sockaddr_in client;
 	socklen_t clientLength = sizeof(client);
 	
 	char buffer[sendSize];
-	char ACK[512] = "ack";
-
+	char ACK[sendSize];
+	
+	ofstream myfile ("output.txt");
+	if (!myfile.is_open()) {
+		cout << "Unable to open file";
+	}
+	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
 	
 	while (strncmp(buffer, "EOF", 2) != 0) {
 
 		recvfrom(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, &clientLength);
-
+		if (strncmp(buffer, "eof", 2) != 0) {
+			myfile << buffer;
+		}
+		
 		int i = 0;
 		while (buffer[i])
 		{
-			buffer[i] = toupper(buffer[i]);
+			ACK[i] = toupper(buffer[i]);
 			i++;
 		}
 		
-		sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, clientLength);
+		sendto(mySocket, ACK, sendSize, 0, (struct sockaddr *)&client, clientLength);
+	
+		cout << ACK << endl;
 	}
 	
-	// Receive last line that contains eof
-	sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, clientLength);
-
-
-	cout << buffer << endl << "end" << endl;
-	
 	close(mySocket);
+	myfile.close();
+	memset(buffer,'\0',512);
+	memset(ACK,'\0',512);
+
 	
     return 0;
 }
