@@ -63,8 +63,8 @@ int main(int argc, const char * argv[]) {
 	}
 	
 	socklen_t slen = sizeof(server);
-	string payload = "123";
-	sendto(mySocket, &payload, sizeof(payload), 0, (struct sockaddr *)&server, slen);
+	char payload[512] = "123";
+	sendto(mySocket, payload, sizeof(payload), 0, (struct sockaddr *)&server, slen);
 	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
 	
@@ -91,7 +91,7 @@ int main(int argc, const char * argv[]) {
 	
 	// Stores simple end of file message
 	// Variable-sized object may not be initialized with value
-	char eofIndicator[512] = "eof";
+	char eofIndicator[512] = "EOF";
 	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
 	

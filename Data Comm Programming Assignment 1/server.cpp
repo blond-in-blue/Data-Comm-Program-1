@@ -51,8 +51,8 @@ int main(int argc, const char * argv[]) {
 	listen(mySocket, 5);
 	
 	int acceptance = accept(mySocket, (struct sockaddr *) NULL, NULL);
-	string payload;
-	recv(acceptance, &payload, 4, 0);
+	char payload[512];
+	recv(acceptance, payload, 4, 0);
 	cout << "- Received payload: " << payload << "\n";
 
 	// Get random port number
@@ -92,11 +92,12 @@ int main(int argc, const char * argv[]) {
 	}
 	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
+	perror("- error binding: ");
 	
 	while (strncmp(buffer, "EOF", 2) != 0) {
 
 		recvfrom(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, &clientLength);
-		if (strncmp(buffer, "eof", 2) != 0) {
+		if (strncmp(buffer, "EOF", 2) != 0) {
 			myfile << buffer;
 		}
 		
@@ -106,17 +107,15 @@ int main(int argc, const char * argv[]) {
 			ACK[i] = toupper(buffer[i]);
 			i++;
 		}
-		
+
 		sendto(mySocket, ACK, sendSize, 0, (struct sockaddr *)&client, clientLength);
-	
-		cout << ACK << endl;
 	}
 	
 	close(mySocket);
 	myfile.close();
 	memset(buffer,'\0',512);
 	memset(ACK,'\0',512);
-
+	
 	
     return 0;
 }
