@@ -19,9 +19,6 @@
 
 using namespace std;
 
-#define BUFFERMAX 4096
-#define CLIENTMAX 1
-
 
 // argv[1]: Port
 int main(int argc, const char * argv[]) {
@@ -34,6 +31,9 @@ int main(int argc, const char * argv[]) {
 		exit(EXIT_FAILURE);
 	}
 	
+	// TCP
+	
+	int sendSize = 512;
 	const char * myPort = argv[1];
 	int mySocket = 0;
 	if ((mySocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -50,16 +50,67 @@ int main(int argc, const char * argv[]) {
 	
 	listen(mySocket, 5);
 	
-	accept(mySocket, (struct sockaddr *) NULL, NULL);
+	int acceptance = accept(mySocket, (struct sockaddr *) NULL, NULL);
+	string payload;
+	recv(acceptance, &payload, 4, 0);
+	cout << "- Received payload: " << payload << "\n";
 
 	// Get random port number
-	int randomPort[1];
+	int randomPort;
 	srand((unsigned)time(NULL));
 	do {
-		randomPort[0] = rand() % 65536;
-	} while (randomPort[0] <= 1024 && randomPort[0] >= 65535);
-	cout << "Random port created: " << randomPort[0] << "\n";
-
+		randomPort = rand() % 65536;
+	} while (randomPort <= 1024 && randomPort >= 65535);
+	cout << "- Random port created: " << randomPort << "\n";
+	
+	payload = to_string(randomPort);
+	
+	send(acceptance, &payload, sizeof(payload), 0);
+	
+	// Close socket
 	close(mySocket);
+	
+	// UDP
+	
+	// Create socket
+	if ((mySocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		cerr << "Error in socket creation.\n";
+		exit(EXIT_FAILURE);
+	}
+	memset((char *) &server, 0, sizeof(server));
+	server.sin_family = AF_INET;
+	server.sin_port = htons(randomPort);
+	server.sin_addr.s_addr = htonl(INADDR_ANY);
+	
+	struct sockaddr_in client;
+	socklen_t clientLength = sizeof(client);
+	
+	char buffer[sendSize];
+	char ACK[512] = "ack";
+
+	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
+	
+	while (strncmp(buffer, "EOF", 2) != 0) {
+
+		recvfrom(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, &clientLength);
+
+		int i = 0;
+		while (buffer[i])
+		{
+			buffer[i] = toupper(buffer[i]);
+			i++;
+		}
+		
+		sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, clientLength);
+	}
+	
+	// Receive last line that contains eof
+	sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, clientLength);
+
+
+	cout << buffer << endl << "end" << endl;
+	
+	close(mySocket);
+	
     return 0;
 }
