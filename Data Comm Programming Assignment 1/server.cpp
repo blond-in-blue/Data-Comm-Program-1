@@ -91,13 +91,22 @@ int main(int argc, const char * argv[]) {
 		cout << "Unable to open file";
 	}
 	
-	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
-	perror("- error binding: ");
+	int yes = 1;
+
+	if (setsockopt(mySocket,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof yes) == -1) {
+		perror("setsockopt");
+		exit(1);
+	}
 	
-	while (strncmp(buffer, "EOF", 2) != 0) {
+	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
+	
+	perror("- Error binding");
+	
+	while (strncmp(buffer, "EOF", 3) != 0) {
 
 		recvfrom(mySocket, buffer, sendSize, 0, (struct sockaddr *)&client, &clientLength);
-		if (strncmp(buffer, "EOF", 2) != 0) {
+
+		if (strncmp(buffer, "EOF", 3) != 0) {
 			myfile << buffer;
 		}
 		
@@ -109,12 +118,14 @@ int main(int argc, const char * argv[]) {
 		}
 
 		sendto(mySocket, ACK, sendSize, 0, (struct sockaddr *)&client, clientLength);
+
 	}
 	
 	close(mySocket);
 	myfile.close();
 	memset(buffer,'\0',512);
 	memset(ACK,'\0',512);
+
 	
 	
     return 0;

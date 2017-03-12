@@ -93,6 +93,13 @@ int main(int argc, const char * argv[]) {
 	// Variable-sized object may not be initialized with value
 	char eofIndicator[512] = "EOF";
 	
+	int yes = 1;
+	
+	if (setsockopt(mySocket,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof yes) == -1) {
+		perror("setsockopt");
+		exit(1);
+	}
+	
 	bind(mySocket, (struct sockaddr *)&server, sizeof(server));
 	
 	FILE * myFile;
@@ -132,13 +139,13 @@ int main(int argc, const char * argv[]) {
 	} while (!feof(myFile));
 
 	// Send eof
-	sendto(mySocket, eofIndicator, sendSize, 0, (struct sockaddr *)&server, slen);
+	sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&server, slen);
 
 	// Receive ACK
 	recvfrom(mySocket, ACKreceiver, sendSize, 0, (struct sockaddr *)&server, &slen);
 
 	// Send last line containing eof
-	sendto(mySocket, buffer, sendSize, 0, (struct sockaddr *)&server, slen);
+	sendto(mySocket, eofIndicator, sendSize, 0, (struct sockaddr *)&server, slen);
 	
 	cout << buffer << endl;
 
